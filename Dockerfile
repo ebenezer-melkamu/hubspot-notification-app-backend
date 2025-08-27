@@ -1,18 +1,22 @@
-# Use official Node.js image
+# Use Node.js LTS
 FROM node:23-slim
 
 # Set working directory
 WORKDIR /usr/src/app
 
-# Install dependencies separately (for caching)
+# Install dependencies first
 COPY package*.json ./
 RUN npm install --production
 
-# Copy the rest of your source code
+# Copy source code
 COPY . .
 
-# Expose port (Cloud Run expects your app to listen on $PORT)
+# Build TypeScript
+RUN npm run build
+
+# Expose Cloud Run port
+ENV PORT=8080
 EXPOSE 8080
 
-# Start your server
+# Start app
 CMD ["npm", "start"]
