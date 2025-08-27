@@ -1,4 +1,5 @@
 steps:
+  # Build Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
@@ -8,33 +9,13 @@ steps:
         '.',
       ]
 
+  # Push image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
         'push',
         'us-central1-docker.pkg.dev/$PROJECT_ID/hubspot-notification-app-backend/hubspot-notification-app-backend:$TAG_NAME',
       ]
-
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args:
-      - run
-      - deploy
-      - hubspot-notification-app-backend
-      - --image=us-central1-docker.pkg.dev/$PROJECT_ID/hubspot-notification-app-backend/hubspot-notification-app-backend:$TAG_NAME
-      - --region=us-central1
-      - --platform=managed
-      - --allow-unauthenticated
-      - --set-env-vars=PORT=4000
-      - --set-env-vars=HUBSPOT_CLIENT_ID=$_HUBSPOT_CLIENT_ID
-      - --set-env-vars=HUBSPOT_CLIENT_SECRET=$_HUBSPOT_CLIENT_SECRET
-      - --set-env-vars=HUBSPOT_REDIRECT_URI=$_HUBSPOT_REDIRECT_URI
-      - --set-env-vars=SLACK_CLIENT_ID=$_SLACK_CLIENT_ID
-      - --set-env-vars=SLACK_CLIENT_SECRET=$_SLACK_CLIENT_SECRET
-      - --set-env-vars=SLACK_REDIRECT_URI=$_SLACK_REDIRECT_URI
-      - --set-env-vars=GOOGLE_APPLICATION_CREDENTIALS=$_GOOGLE_APPLICATION_CREDENTIALS
-      - --set-env-vars=JWT_SECRET=$_JWT_SECRET
-      - --set-env-vars=CORS_ORIGINS=$_CORS_ORIGINS
 
 images:
   - us-central1-docker.pkg.dev/$PROJECT_ID/hubspot-notification-app-backend/hubspot-notification-app-backend:$TAG_NAME
