@@ -1,0 +1,30 @@
+steps:
+  # Build image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '-t',
+        'gcr.io/$PROJECT_ID/hubspot-notification-app-backend:$TAG_NAME',
+        '.',
+      ]
+
+  # Push image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      ['push', 'gcr.io/$PROJECT_ID/hubspot-notification-app-backend:$TAG_NAME']
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - hubspot-notification-app-backend
+      - --image=gcr.io/$PROJECT_ID/hubspot-notification-app-backend:$TAG_NAME
+      - --region=us-central1
+      - --platform=managed
+      - --allow-unauthenticated
+
+images:
+  - gcr.io/$PROJECT_ID/hubspot-notification-app-backend:$TAG_NAME
