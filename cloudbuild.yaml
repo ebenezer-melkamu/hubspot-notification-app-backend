@@ -16,12 +16,22 @@ steps:
       - deploy
       - hubspot-slack-backend
       - --image=gcr.io/$PROJECT_ID/hubspot-slack-backend:$TAG_NAME
-      - --region=us-central1 # change if needed
+      - --region=us-central1
       - --platform=managed
       - --allow-unauthenticated
+      - --set-env-vars=PORT=4000
+      - --set-env-vars=HUBSPOT_CLIENT_ID=$_HUBSPOT_CLIENT_ID
+      - --set-env-vars=HUBSPOT_CLIENT_SECRET=$_HUBSPOT_CLIENT_SECRET
+      - --set-env-vars=HUBSPOT_REDIRECT_URI=$_HUBSPOT_REDIRECT_URI
+      - --set-env-vars=SLACK_CLIENT_ID=$_SLACK_CLIENT_ID
+      - --set-env-vars=SLACK_CLIENT_SECRET=$_SLACK_CLIENT_SECRET
+      - --set-env-vars=SLACK_REDIRECT_URI=$_SLACK_REDIRECT_URI
+      - --set-env-vars=GOOGLE_APPLICATION_CREDENTIALS=$_GOOGLE_APPLICATION_CREDENTIALS
+      - --set-env-vars=JWT_SECRET=$_JWT_SECRET
+      - --set-env-vars=CORS_ORIGINS=$_CORS_ORIGINS
 
 images:
   - gcr.io/$PROJECT_ID/hubspot-slack-backend:$TAG_NAME
 
 options:
-  logging: CLOUD_LOGGING_ONLY # ✅ fixes the logging error if you *do* ever use a custom SA
+  logging: CLOUD_LOGGING_ONLY
