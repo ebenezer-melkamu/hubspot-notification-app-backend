@@ -1,7 +1,13 @@
 steps:
   # Build Docker image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/hubspot_:$TAG_NAME', '.']
+    args:
+      [
+        'build',
+        '-t',
+        'gcr.io/$PROJECT_ID/hubspot-notification-app-backend:$TAG_NAME',
+        '.',
+      ]
 
   # Push image to registry
   - name: 'gcr.io/cloud-builders/docker'
