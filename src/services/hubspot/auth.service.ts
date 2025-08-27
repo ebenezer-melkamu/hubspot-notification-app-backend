@@ -12,16 +12,10 @@ const HUBSPOT_REDIRECT_URI = process.env.HUBSPOT_REDIRECT_URI!;
 const hubspotScopes = [
   'oauth',
   'crm.objects.contacts.read',
-  'crm.objects.contacts.write',
   'crm.objects.companies.read',
-  'crm.objects.companies.write',
   'crm.objects.deals.read',
-  'crm.objects.deals.write',
   'crm.objects.invoices.read',
-  'crm.objects.invoices.write',
   'crm.objects.line_items.read',
-  'crm.objects.line_items.write',
-  'crm.dealsplits.read_write',
 ];
 
 /**
