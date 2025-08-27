@@ -38,5 +38,6 @@ steps:
 
 images:
   - gcr.io/$PROJECT_ID/hubspot-notification-app-backend:$TAG_NAME
-# options:
-#   logging: CLOUD_LOGGING_ONLY
+
+options:
+  logging: CLOUD_LOGGING_ONLY
