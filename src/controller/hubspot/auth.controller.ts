@@ -39,6 +39,7 @@ export const handleHubspotCallback = async (
 
   try {
     const hubspotToken = await hubspotService.auth.exchangeCodeForTokens(code);
+    logger.info('HubSpot token', { hubspotToken });
 
     const hubspotClient = hubspotService.auth.createHubspotClient(
       hubspotToken.access_token,
@@ -48,6 +49,8 @@ export const handleHubspotCallback = async (
     const accountInfo = await hubspotService.account.fetchAccountInfo({
       hubspotClient,
     });
+    logger.info('HubSpot Account Info', { accountInfo });
+
     const portalId = accountInfo.portalId.toString();
     logger.info('HubSpot account connected', { portalId });
 
