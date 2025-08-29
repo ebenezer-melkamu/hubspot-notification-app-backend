@@ -89,10 +89,15 @@ export const setOrUpdateSessionToken = (
 
   const newToken = generateToken(merged);
 
+  /**
+   *  TODO:
+   * When deploying frontend + backend on the same domain (e.g. app.example.com + api.example.com),
+   * switch back to sameSite='strict' (or at least 'lax') for stronger CSRF protection.
+   */
   res.cookie('session_token', newToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production', // only send cookie over HTTPS in production; must be false for local http://localhost dev
-    sameSite: 'strict',
+    sameSite: 'none',
     maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
   });
 };
