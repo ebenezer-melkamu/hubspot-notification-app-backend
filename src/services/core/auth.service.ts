@@ -89,14 +89,6 @@ export const setOrUpdateSessionToken = (
   const merged: AuthPayload = { ...(existingPayload || {}), ...updates };
 
   const newToken = generateToken(merged);
-  logger.info('New Tokens ', { newToken }); //TODO: remove this log
-
-  logger.info('Session ', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // only send cookie over HTTPS in production; must be false for local http://localhost dev
-    sameSite: 'none',
-    maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days})
-  });
 
   /**
    * TODO:
@@ -113,10 +105,9 @@ export const setOrUpdateSessionToken = (
 
 /**
  * Middleware that checks for a valid session token in cookies.
- * Adds `req.user` (AuthPayload) if token is valid.
+ * Adds `req.auth` (AuthPayload) if token is valid.
  * Responds with 401 Unauthorized if missing or invalid.
  */
-
 export const requireAuth: RequestHandler = (
   req: Request & { auth?: AuthPayload },
   res: Response,
@@ -125,16 +116,24 @@ export const requireAuth: RequestHandler = (
   const token = req.cookies?.['session_token'];
 
   if (!token) {
+    logger.warn('Unauthorized request — missing session_token cookie', {
+      route: req.originalUrl,
+      ip: req.ip,
+    });
     res.status(401).json({ error: 'Unauthorized' });
     return;
   }
 
   try {
     const payload = verifyToken(token);
-
     req.auth = payload;
     next();
-  } catch {
+  } catch (err) {
+    logger.warn('Unauthorized request — invalid or expired token', {
+      route: req.originalUrl,
+      ip: req.ip,
+      error: err instanceof Error ? err.message : String(err),
+    });
     res.status(401).json({ error: 'Invalid token' });
   }
 };
