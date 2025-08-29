@@ -7,6 +7,7 @@ import * as firestoreService from '../firestore';
 import * as hubspotService from '../../services/hubspot';
 
 import { HubspotTokenDocument } from '../firestore/hubspot';
+import { logger } from '../../helpers/logger';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_EXPIRES_IN = '30d';
@@ -88,9 +89,17 @@ export const setOrUpdateSessionToken = (
   const merged: AuthPayload = { ...(existingPayload || {}), ...updates };
 
   const newToken = generateToken(merged);
+  logger.info('New Tokens ', { newToken }); //TODO: remove this log
+
+  logger.info('Session ', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // only send cookie over HTTPS in production; must be false for local http://localhost dev
+    sameSite: 'none',
+    maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days})
+  });
 
   /**
-   *  TODO:
+   * TODO:
    * When deploying frontend + backend on the same domain (e.g. app.example.com + api.example.com),
    * switch back to sameSite='strict' (or at least 'lax') for stronger CSRF protection.
    */
